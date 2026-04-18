@@ -1,7 +1,16 @@
 
-package ar.com.SplitMate;
+package ar.com.splitmate;
 
-public class User {
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table( name = "user")
+public class User extends Persistible{
+
+    
+    @Column( name = "username")
     private String username;
     private String password;
 
@@ -9,6 +18,8 @@ public class User {
         this.username = username;
         this.password = password;
     }
+    
+    public User() {};
     
     public boolean login(String username, String password){
             if(username.length() < 3 && password.length() < 3){
@@ -22,5 +33,13 @@ public class User {
             return false;
                     }
             
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

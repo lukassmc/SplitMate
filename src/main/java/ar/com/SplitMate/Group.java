@@ -1,23 +1,35 @@
 
-package ar.com.SplitMate;
+package ar.com.splitmate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Group {
+@Entity
+@Table( name = "grupo")
+public class Group extends Persistible {
+    
+    
+    @Column(name = "name")
     private String name;
-    private long id;
-    private List<GroupMember>members;
-    private List<Expense> expenses;
+    
+    @OneToMany(mappedBy= "group")
+    private List<GroupMember>members = new ArrayList<>();
+    
+    @OneToMany(mappedBy= "group")
+    private List<Expense> expenses = new ArrayList<>();
 
-    public Group(String name, long id) {
+    public Group(String name) {
         this.name = name;
-        this.id = id;
         this.members = new ArrayList<>();
         this.expenses = new ArrayList<>();
 
     }
     
+    public Group(){};
     
     public void addMember(GroupMember user){
     
@@ -47,6 +59,12 @@ public class Group {
         System.out.println("Descripción: " + expense.getDescription());
         System.out.println("Monto: $" + expense.getAmount());
     }
+
+    public String getName() {
+        return name;
+    }
+
+   
     
     
     

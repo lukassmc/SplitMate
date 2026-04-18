@@ -1,11 +1,29 @@
 
-package ar.com.SplitMate;
+package ar.com.splitmate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 
-
-public class GroupMember {
+@Entity
+@Table( name = "group_member")
+public class GroupMember extends Persistible{
+    
+    @ManyToOne
+    @JoinColumn(name= "user_id")
     private User user;
+    
+    @ManyToOne
+    @JoinColumn(name = "group_id")
     private Group group;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
 
     public GroupMember(User user, Group group, Role role) {
@@ -14,10 +32,24 @@ public class GroupMember {
         this.role = role;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
     public GroupMember(User user, Group group) {
         this.user = user;
         this.group = group;
         this.role = role.MEMBER;
     }
+    
+    public GroupMember(){};
     
 }

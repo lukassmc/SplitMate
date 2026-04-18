@@ -1,74 +1,211 @@
-package ar.com.SplitMate;
+package ar.com.splitmate;
+
+import ar.com.splitmate.servicios.*;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+
 import java.util.Scanner;
 
-public class SplitMate {
+@SpringBootApplication
+public class SplitMate implements CommandLineRunner {
 
+    private final UserService userService;
+    private final GroupService groupService;
+    private final ExpenseService expenseService;
+    private final GroupMemberService memberService;
     
-    public static void main(String[] args) {
-         Scanner scanner = new Scanner(System.in);
 
-        String registeredUsername = "";
-        String registeredPassword = "";
-
-        System.out.println("=== Bienvenido a SplitMate ===");
-
-    
-        System.out.println("\n--- Registro de usuario ---");
-        System.out.print("Ingrese nombre de usuario: ");
-        registeredUsername = scanner.nextLine();
-
-        System.out.print("Ingrese contraseña: ");
-        registeredPassword = scanner.nextLine();
-
-        User user1 = new User(registeredUsername, registeredPassword);
-        
-        System.out.println("Usuario registrado con éxito.\n");
-
-   
-        System.out.println("--- Login ---");
-
-        System.out.print("Usuario: ");
-        String loginUser = scanner.nextLine();
-
-        System.out.print("Contrasena: ");
-        String loginPassword = scanner.nextLine();
-
-        while (user1.login(loginUser, loginPassword) == false) {
-            System.out.println("\n Credenciales incorrectas. Intente nuevamente.");
-            System.out.print("Contrasena: ");
-            loginPassword = scanner.nextLine();
-        }
-
-        if (user1.login(loginUser, loginPassword) == true) {
-
-            System.out.println("\nLogin exitoso. Bienvenido " + loginUser);
-
-         
-            System.out.print("\nIngrese nombre del grupo: ");
-            String groupName = scanner.nextLine();
-
-            Group grupo1 = new Group(groupName, 123);
-           
-            
-            System.out.println("Grupo '" + groupName + "' creado.");
-            GroupMember miembro1 = new GroupMember(user1, grupo1);
-            grupo1.addMember(miembro1);
-            
-            // Registrar gasto
-            System.out.print("\nIngrese descripción del gasto: ");
-            String expenseDescription = scanner.nextLine();
-
-            System.out.print("Ingrese monto del gasto: ");
-            double amount = scanner.nextDouble();
-            
-            Expense gasto1 = new Expense(1, expenseDescription, amount, user1, grupo1);
-
-            grupo1.addExpense(gasto1);
-
-        } else {
-            System.out.println("\nUsuario o contraseña incorrectos.");
-        }
-
-        scanner.close();
+    public SplitMate(UserService userService, GroupService groupService, ExpenseService expenseService, GroupMemberService memberService) {
+        this.userService = userService;
+        this.groupService = groupService;
+        this.expenseService = expenseService;
+        this.memberService = memberService;
+  
     }
+
+    public static void main(String[] args) {
+        SpringApplication.run(SplitMate.class, args);
+    }
+
+    @Override
+    public void run(String... args) {
+        menu();
+    }
+
+    private void menu() {
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("VERSION NUEVA DEL MENU");
+            System.out.println("\n=== SPLITMATE ===");
+            System.out.println("1. Crear usuario");
+            System.out.println("2. Crear grupo");
+            System.out.println("3. Agregar usuario a grupo");
+            System.out.println("4. Crear gasto");
+            System.out.println("0. Salir");
+
+            opcion = leerOpcion(scanner);
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1 -> crearUsuario(scanner);
+                case 2 -> crearGrupo(scanner);
+                case 3 -> agregarMiembro(scanner);
+                case 4 -> crearGasto(scanner);
+            }
+
+        } while (opcion != 0);
+    }
+
+
+
+    private User crearUsuario(Scanner scanner) {
+        System.out.print("Username: ");
+        String username = scanner.nextLine();
+        while (username == null || username == "" ){
+            System.out.print("Ingrese un usuario porfavor: ");
+            username = scanner.nextLine();
+        }
+
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+        while (password == null || password == ""){
+        System.out.print("Ingrese una contraseña porfavor: ");
+        password = scanner.nextLine();
+        }
+
+        User user = new User(username, password);
+        userService.guardarUsuario(user);
+
+        System.out.println("Usuario creado!");
+        
+        return user;
+    }
+
+    private Group crearGrupo(Scanner scanner) {
+        System.out.print("Nombre del grupo: ");
+        String name = scanner.nextLine();
+        while (name == null || name == ""){
+            System.out.print("Ingrese un nombre porfavor: ");
+            name = scanner.nextLine();
+        }
+
+        Group group = new Group(name);
+        groupService.guardarGrupo(group);
+
+        System.out.println(group.getId());
+        System.out.println("Grupo creado!");
+        
+        return group;
+    }
+
+    private void agregarMiembro(Scanner scanner) {
+
+        System.out.print("ID Usuario: ");
+        Long userId = scanner.nextLong();
+
+        System.out.print("ID Grupo: ");
+        Long groupId = scanner.nextLong();
+        scanner.nextLine();
+
+        User user = userService.buscarPorId(userId);
+        Group group = groupService.buscarPorId(groupId);
+
+        if (user == null || group == null) {
+            System.out.println("Usuario o grupo no encontrado");
+            return;
+        }
+
+        GroupMember miembro = new GroupMember(user, group);
+
+        groupService.agregarMiembro(miembro);
+
+        System.out.println("Miembro agregado correctamente");
+}
+
+private void crearGasto(Scanner scanner) {
+
+        System.out.print("Descripción: ");
+        String desc = scanner.nextLine();
+
+        double amount = leerDouble(scanner, "Monto: ");
+
+        User user = obtenerUsuarioValido(scanner);
+        Group group = obtenerGrupoValido(scanner);
+
+        GroupMember miembro = memberService.obtenerMiembro(user.getId(), group.getId());
+
+        if (miembro == null) {
+            System.out.println("❌ El usuario no pertenece a ese grupo.");
+            return;
+        }
+
+        Expense expense = new Expense(desc, amount, miembro, group);
+        expenseService.guardarGasto(expense);
+
+        System.out.println("✅ Gasto creado correctamente");
+}
+    
+    private User obtenerUsuarioValido(Scanner scanner) {
+    while (true) {
+        Long userId = leerLong(scanner, "ID Usuario: ");
+        User user = userService.buscarPorId(userId);
+
+        if (user != null) return user;
+
+        System.out.println("❌ Usuario no encontrado. Intentá de nuevo.");
+    }
+}
+    
+    private Group obtenerGrupoValido(Scanner scanner) {
+    while (true) {
+        Long groupId = leerLong(scanner, "ID Grupo: ");
+        Group grupo = groupService.buscarPorId(groupId);
+
+        if (grupo != null) return grupo;
+
+        System.out.println("❌ Usuario no encontrado. Intentá de nuevo.");
+    }
+}
+    private Long leerLong(Scanner scanner, String mensaje) {
+    while (true) {
+        try {
+            System.out.print(mensaje);
+            Long value = Long.parseLong(scanner.nextLine());
+            return value;
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Ingresá un número válido.");
+        }
+    }
+}
+    
+   private double leerDouble(Scanner scanner, String mensaje) {
+    while (true) {
+        try {
+            System.out.print(mensaje);
+            double value = Double.parseDouble(scanner.nextLine());
+            if (value <= 0) {
+                System.out.println("❌ El monto debe ser mayor a 0.");
+                continue;
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Ingresá un número válido.");
+        }
+    }
+}
+   
+   private int leerOpcion(Scanner scanner) {
+    while (true) {
+        try {
+            int op = Integer.parseInt(scanner.nextLine());
+            if (op >= 0 && op <= 4) return op;
+        } catch (Exception ignored) {}
+
+        System.out.println("❌ Opción inválida. Intentá de nuevo.");
+    }
+}
 }

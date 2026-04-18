@@ -1,0 +1,34 @@
+
+package ar.com.splitmate.entity.test;
+
+import ar.com.splitmate.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExpenseEntityTest {
+
+    @Test
+    void deberiaCrearGasto() {
+        User user = new User("lucas", "123");
+        Group group = new Group("Asado");
+        GroupMember member = new GroupMember(user, group);
+
+        Expense expense = new Expense("Carne", 5000, member, group);
+
+        assertEquals("Carne", expense.getDescription());
+        assertEquals(5000, expense.getAmount());
+        assertEquals(member, expense.getPaidBy());
+    }
+
+    @Test
+    void montoNoPuedeSerNegativo() {
+        User user = new User("lucas", "123");
+        Group group = new Group("Asado");
+        GroupMember member = new GroupMember(user, group);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Expense("Carne", -100, member, group);
+        });
+    }
+}
