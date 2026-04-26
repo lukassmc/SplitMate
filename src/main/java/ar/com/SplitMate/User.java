@@ -25,7 +25,7 @@ public class User extends Persistible{
             if(username.length() < 3 && password.length() < 3){
                 System.out.println("Las credenciales no cumplen los requisitos de longitud.");  
             }
-            
+
            if(username.equals(this.username) && password.equals(this.password)){
                 System.out.println("Sesión iniciada correctamente.");
                         return true;

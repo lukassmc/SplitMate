@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Crear Grupo</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+
+<h1>Crear Grupo</h1>
+
+<form th:action="@{/groups/save}" th:object="${groupForm}" method="post">
+
+    <label>Nombre del grupo:</label>
+    <input type="text" th:field="*{name}" required />
+
+    <br><br>
+
+    <button type="submit">Crear</button>
+
+</form>
+
+<br>
+<a th:href="@{/}">Volver</a>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 package ar.com.splitmate;
 
+import ar.com.splitmate.excepciones.UsuarioNoEncontradoException;
 import ar.com.splitmate.servicios.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,25 +37,31 @@ public class SplitMate implements CommandLineRunner {
 
     private void menu() {
         Scanner scanner = new Scanner(System.in);
-        int opcion;
+        Integer opcion = null;
 
         do {
-            System.out.println("VERSION NUEVA DEL MENU");
-            System.out.println("\n=== SPLITMATE ===");
-            System.out.println("1. Crear usuario");
-            System.out.println("2. Crear grupo");
-            System.out.println("3. Agregar usuario a grupo");
-            System.out.println("4. Crear gasto");
-            System.out.println("0. Salir");
+            try {
+                System.out.println("VERSION NUEVA DEL MENU");
+                System.out.println("\n=== SPLITMATE ===");
+                System.out.println("1. Crear usuario");
+                System.out.println("2. Crear grupo");
+                System.out.println("3. Agregar usuario a grupo");
+                System.out.println("4. Crear gasto");
+                System.out.println("0. Salir");
 
-            opcion = leerOpcion(scanner);
-            scanner.nextLine();
+                opcion = leerOpcion(scanner);
 
-            switch (opcion) {
-                case 1 -> crearUsuario(scanner);
-                case 2 -> crearGrupo(scanner);
-                case 3 -> agregarMiembro(scanner);
-                case 4 -> crearGasto(scanner);
+                switch (opcion) {
+                    case 1 -> crearUsuario(scanner);
+                    case 2 -> crearGrupo(scanner);
+                    case 3 -> agregarMiembro(scanner);
+                    case 4 -> crearGasto(scanner);
+                }
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("❌ " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("⚠️ Error inesperado: " + e.getMessage());
             }
 
         } while (opcion != 0);
@@ -126,7 +133,7 @@ public class SplitMate implements CommandLineRunner {
         System.out.println("Miembro agregado correctamente");
 }
 
-private void crearGasto(Scanner scanner) {
+private void crearGasto(Scanner scanner) throws UsuarioNoEncontradoException{
 
         System.out.print("Descripción: ");
         String desc = scanner.nextLine();
@@ -139,8 +146,7 @@ private void crearGasto(Scanner scanner) {
         GroupMember miembro = memberService.obtenerMiembro(user.getId(), group.getId());
 
         if (miembro == null) {
-            System.out.println("❌ El usuario no pertenece a ese grupo.");
-            return;
+            throw new UsuarioNoEncontradoException("Usuario No Encontrado");
         }
 
         Expense expense = new Expense(desc, amount, miembro, group);

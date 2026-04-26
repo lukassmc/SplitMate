@@ -18,7 +18,7 @@ public class Expense extends Persistible{
     private String description;
    
     @Column(name ="amount")
-    private double amount;
+    private Double amount;
     
     @ManyToOne
     @JoinColumn(name= "paid_by", nullable = false)
@@ -32,7 +32,10 @@ public class Expense extends Persistible{
     @OneToMany(mappedBy= "expense")
     private List<ExpenseSplit> splits;
 
-    public Expense( String description, double amount, GroupMember paidBy, Group group) {
+    public Expense( String description, Double amount, GroupMember paidBy, Group group) {
+        if (amount == null || amount < 0) {
+            throw new IllegalArgumentException("El monto no puede ser negativo");
+        }
         this.description = description;
         this.amount = amount;
         this.paidBy = paidBy;
@@ -48,7 +51,7 @@ public class Expense extends Persistible{
         return description;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
 

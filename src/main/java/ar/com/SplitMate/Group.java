@@ -23,6 +23,10 @@ public class Group extends Persistible {
     private List<Expense> expenses = new ArrayList<>();
 
     public Group(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
+
         this.name = name;
         this.members = new ArrayList<>();
         this.expenses = new ArrayList<>();

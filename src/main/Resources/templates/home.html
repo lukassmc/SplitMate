@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SplitMate</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<h1> SplitMate</h1>
+
+<p>Seleccioná una acción:</p>
+
+<div style="margin-top:20px;">
+
+    <a th:href="@{/users/new}">
+        <button> Crear usuario</button>
+    </a>
+
+    <br><br>
+
+    <a th:href="@{/groups/new}">
+        <button> Crear grupo</button>
+    </a>
+
+    <br><br>
+
+    <a th:href="@{/expenses/new}">
+        <button> Crear gasto</button>
+    </a>
+
+</div>
+
+<hr style="margin:30px 0;">
+
+<h3>Flujo recomendado</h3>
+<ol>
+    <li>Crear usuario</li>
+    <li>Crear grupo</li>
+    <li>Agregar usuario al grupo </li>
+    <li>Crear gasto</li>
+</ol>
+
+</body>
+</html>

@@ -14,7 +14,8 @@ public class ExpenseEntityTest {
         Group group = new Group("Asado");
         GroupMember member = new GroupMember(user, group);
 
-        Expense expense = new Expense("Carne", 5000, member, group);
+
+        Expense expense = new Expense("Carne", Double.valueOf(5000), member, group);
 
         assertEquals("Carne", expense.getDescription());
         assertEquals(5000, expense.getAmount());
@@ -28,7 +29,7 @@ public class ExpenseEntityTest {
         GroupMember member = new GroupMember(user, group);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            new Expense("Carne", -100, member, group);
+            new Expense("Carne", Double.valueOf(-100), member, group);
         });
     }
 }

@@ -9,6 +9,7 @@ ar\com\splitmate\Persistible.class
 ar\com\splitmate\servicios\UserService.class
 ar\com\splitmate\repositorios\GroupMemberRepository.class
 ar\com\splitmate\servicios\ExpenseServiceImp.class
+ar\com\splitmate\controllers\Home.class
 ar\com\splitmate\Role.class
 ar\com\splitmate\servicios\ExpenseService.class
 ar\com\splitmate\User.class
@@ -18,3 +19,4 @@ ar\com\splitmate\servicios\GroupMemberService.class
 ar\com\splitmate\servicios\GroupMemberServiceImp.class
 ar\com\splitmate\GroupMember.class
 ar\com\splitmate\servicios\GroupService.class
+ar\com\splitmate\excepciones\UsuarioNoEncontradoException.class

@@ -1,0 +1,5 @@
+ar\com\splitmate\entity\test\GroupMemberEntityTest.class
+ar\com\splitmate\entity\test\UserEntityTest.class
+ar\com\splitmate\integration\test\SplitmateIntegrationTest.class
+ar\com\splitmate\entity\test\ExpenseEntityTest.class
+ar\com\splitmate\entity\test\GroupEntityTest.class

@@ -45,7 +45,7 @@ public class SplitmateIntegrationTest {
         assertNotNull(encontrado);
 
       
-        Expense expense = new Expense("Cena", 1000, encontrado, group);
+        Expense expense = new Expense("Cena", 1000.0, encontrado, group);
         expenseService.guardarGasto(expense);
 
         assertNotNull(expense.getId());

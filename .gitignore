@@ -1,2 +1,11 @@
 src/main/resources/application.properties
 .env
+
+# Java / Maven
+target/
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+out/
