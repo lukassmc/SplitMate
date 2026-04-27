@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'SplitMate · ' + ${grupo.name}">SplitMate · Grupo</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo-wrap">
+        <div class="logo-mark">
+            <div class="lb lb1"></div>
+            <div class="lb lb2"></div>
+            <div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+    </div>
+    <div class="topbar-right">
+        <span class="topbar-user" th:text="${usuario.username}"></span>
+        <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <!-- Encabezado del grupo -->
+    <div class="group-hero">
+        <div>
+            <a th:href="@{/dashboard}" class="back-link">← Mis grupos</a>
+            <h1 class="page-title" th:text="${grupo.name}">Nombre</h1>
+            <p class="page-sub">
+                <span th:text="${#lists.size(grupo.members)}">0</span> miembros ·
+                <span th:text="${#lists.size(grupo.expenses)}">0</span> gastos
+            </p>
+        </div>
+        <a th:href="@{/expenses/new(groupId=${grupo.id})}" class="btn btn-primary">
+            + Agregar gasto
+        </a>
+    </div>
+
+    <!-- Código de invitación -->
+    <div class="invite-panel">
+        <div>
+            <p class="invite-label">Código de invitación</p>
+            <p class="invite-code" th:text="${grupo.inviteCode}">ABC123</p>
+        </div>
+        <p class="invite-hint">Compartí este código para que otros usuarios puedan unirse al grupo.</p>
+    </div>
+
+    <div class="detail-grid">
+
+        <!-- Miembros -->
+        <div class="card">
+            <div class="card-title">Miembros</div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="m : ${grupo.members}">
+                    <td>
+                        <div class="member-row">
+                            <div class="avatar" th:text="${#strings.substring(m.user.username, 0, 2).toUpperCase()}">US</div>
+                            <span th:text="${m.user.username}">username</span>
+                        </div>
+                    </td>
+                    <td>
+                            <span class="badge"
+                                  th:classappend="${m.role.name() == 'ADMIN'} ? 'badge-amber' : 'badge-navy'"
+                                  th:text="${m.role}">MEMBER</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(grupo.members)}">
+                    <td colspan="2" class="empty-state">Sin miembros aún</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Gastos -->
+        <div class="card">
+            <div class="card-title">Gastos</div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Monto</th>
+                    <th>Pagó</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="e : ${grupo.expenses}">
+                    <td th:text="${e.description}">desc</td>
+                    <td class="amount" th:text="'$' + ${#numbers.formatDecimal(e.amount, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                    <td th:text="${e.paidBy.user.username}">usuario</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(grupo.expenses)}">
+                    <td colspan="3" class="empty-state">
+                        Sin gastos aún.
+                        <a th:href="@{/expenses/new(groupId=${grupo.id})}">Agregar el primero</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SplitMate · Login</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-logo">
+        <div class="logo-mark">
+            <div class="lb lb1"></div>
+            <div class="lb lb2"></div>
+            <div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+    </div>
+
+    <div class="auth-card">
+        <h2 class="auth-title">Bienvenido de vuelta</h2>
+        <p class="auth-sub">Ingresá tu cuenta para continuar</p>
+
+        <!-- Mensaje si viene de un registro exitoso -->
+        <div class="alert alert-success" th:if="${param.registered}">
+            ¡Cuenta creada! Ya podés iniciar sesión.
+        </div>
+
+        <!-- Error de login -->
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <form th:action="@{/login}" th:object="${loginForm}" method="post">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" th:field="*{username}" placeholder="tu.usuario" required autofocus/>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" th:field="*{password}" placeholder="••••••••" required/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Ingresar</button>
+        </form>
+
+        <p class="auth-footer">
+            ¿No tenés cuenta? <a th:href="@{/register}">Registrate</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

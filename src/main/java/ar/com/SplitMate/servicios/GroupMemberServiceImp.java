@@ -19,7 +19,6 @@ public class GroupMemberServiceImp implements GroupMemberService{
     
     @Override
     public GroupMember obtenerMiembro(Long userId, Long groupId) {
-    return repository.findByUserIdAndGroupId(userId, groupId)
-            .orElseThrow(() -> new RuntimeException("El usuario no pertenece al grupo"));
+    return repository.findByUserIdAndGroupId(userId, groupId);
 }
 }

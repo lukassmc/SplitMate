@@ -32,7 +32,6 @@ public class SplitMate implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        menu();
     }
 
     private void menu() {

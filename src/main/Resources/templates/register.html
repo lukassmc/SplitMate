@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SplitMate · Registro</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-logo">
+        <div class="logo-mark">
+            <div class="lb lb1"></div>
+            <div class="lb lb2"></div>
+            <div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+    </div>
+
+    <div class="auth-card">
+        <h2 class="auth-title">Crear cuenta</h2>
+        <p class="auth-sub">Empezá a dividir gastos con tu grupo</p>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <form th:action="@{/register}" th:object="${userForm}" method="post">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" th:field="*{username}" placeholder="Mínimo 3 caracteres" required autofocus/>
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" th:field="*{password}" placeholder="Mínimo 3 caracteres" required/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Crear cuenta</button>
+        </form>
+
+        <p class="auth-footer">
+            ¿Ya tenés cuenta? <a th:href="@{/login}">Iniciá sesión</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

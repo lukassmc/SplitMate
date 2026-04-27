@@ -11,5 +11,8 @@ public interface GroupService {
     public void agregarMiembro(GroupMember usuario);
     
     public Group buscarPorId(Long id);
-    
+
+    Group buscarPorCodigo(String inviteCode);
+
+    java.util.List<Group> buscarGruposDeUsuario(Long userId);
 }
