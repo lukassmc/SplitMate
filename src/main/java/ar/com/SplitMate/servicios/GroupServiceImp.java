@@ -9,6 +9,8 @@ import ar.com.splitmate.repositorios.GroupRepository;
 import ar.com.splitmate.repositorios.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,5 +57,19 @@ public class GroupServiceImp implements GroupService {
         
     }
     
-    
+    @Override
+    public Group buscarPorCodigo(String inviteCode){
+        return repository.findByInviteCode(inviteCode.toUpperCase());
+
+    }
+
+    @Override
+    public List<Group> buscarGruposDeUsuario(Long userId) {
+        return memberRepository.findByUserId(userId)
+                .stream()
+                .map(GroupMember :: getGroup)
+                .collect(Collectors.toList());
+
+
+    }
 }

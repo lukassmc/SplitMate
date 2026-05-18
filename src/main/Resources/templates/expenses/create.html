@@ -1,20 +1,62 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SplitMate · Agregar gasto</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
 <body>
-<h2>Crear Gasto</h2>
 
-<div th:if="${error}" style="color:red;">
-    <p th:text="${error}"></p>
-</div>
+<header class="topbar">
+    <div class="logo-wrap">
+        <div class="logo-mark">
+            <div class="lb lb1"></div>
+            <div class="lb lb2"></div>
+            <div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+    </div>
+    <div class="topbar-right">
+        <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
+    </div>
+</header>
 
-<form th:action="@{/expenses}" th:object="${expenseForm}" method="post">
-    <input type="text" th:field="*{description}" placeholder="Descripción"/>
-    <input type="number" step="0.01" th:field="*{amount}" placeholder="Monto"/>
-    <input type="number" th:field="*{userId}" placeholder="User ID"/>
-    <input type="number" th:field="*{groupId}" placeholder="Group ID"/>
+<main class="main-content" style="max-width:480px">
 
-    <button type="submit">Crear</button>
-</form>
+    <a th:href="@{/groups/{id}(id=${grupo.id})}" class="back-link">← Volver al grupo</a>
+
+    <div class="auth-card" style="margin-top:24px">
+        <h2 class="auth-title">Agregar gasto</h2>
+        <p class="auth-sub">Grupo: <strong th:text="${grupo.name}">Nombre</strong></p>
+
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <!--
+            groupId va como parámetro en la URL del POST, no como campo del form.
+            userId ya no existe en el formulario — sale de la sesión en el controller.
+        -->
+        <form th:action="@{/expenses(groupId=${grupo.id})}"
+              th:object="${expenseForm}"
+              method="post">
+
+            <div class="form-group">
+                <label>Descripción</label>
+                <input type="text" th:field="*{description}"
+                       placeholder="ej: Cena en La Marchigiana" required autofocus/>
+            </div>
+
+            <div class="form-group">
+                <label>Monto ($)</label>
+                <input type="number" step="0.01" min="0.01"
+                       th:field="*{amount}"
+                       placeholder="ej: 2400" required/>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Registrar gasto</button>
+        </form>
+    </div>
+
+</main>
 
 </body>
 </html>

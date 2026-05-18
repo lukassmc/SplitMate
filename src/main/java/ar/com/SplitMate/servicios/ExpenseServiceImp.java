@@ -13,7 +13,8 @@ public class ExpenseServiceImp implements ExpenseService {
     private ExpenseRepository repository;
     
     @Override
-    public void guardarGasto(Expense expense){
+    public Expense guardarGasto(Expense expense){
         this.repository.save(expense);
+        return expense;
     }
 }

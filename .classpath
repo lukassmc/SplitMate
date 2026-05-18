@@ -98,6 +98,13 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/tomcat/embed/tomcat-embed-el/10.1.20/tomcat-embed-el-10.1.20.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.20/tomcat-embed-websocket-10.1.20.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-webmvc/6.1.6/spring-webmvc-6.1.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/boot/spring-boot-starter-security/3.2.5/spring-boot-starter-security-3.2.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/security/spring-security-config/6.2.4/spring-security-config-6.2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/security/spring-security-core/6.2.4/spring-security-core-6.2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/security/spring-security-crypto/6.2.4/spring-security-crypto-6.2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/springframework/security/spring-security-web/6.2.4/spring-security-web-6.2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/auth0/java-jwt/4.5.0/java-jwt-4.5.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.2.RELEASE/thymeleaf-extras-springsecurity6-3.1.2.RELEASE.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/springframework/boot/spring-boot-devtools/3.2.5/spring-boot-devtools-3.2.5.jar"/>
 </classpath>

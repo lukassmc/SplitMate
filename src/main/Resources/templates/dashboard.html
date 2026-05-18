@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>SplitMate · Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo-wrap">
+        <div class="logo-mark">
+            <div class="lb lb1"></div>
+            <div class="lb lb2"></div>
+            <div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+    </div>
+    <div class="topbar-right">
+        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/admin}" class="btn btn-ghost btn-sm"> Administracion</a>
+        <span class="topbar-user" th:text="${usuario.username}"></span>
+        <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Mis grupos</h1>
+            <p class="page-sub">Grupos en los que participás</p>
+        </div>
+        <div class="header-actions">
+            <a th:href="@{/groups/join}" class="btn btn-ghost">Unirme con código</a>
+            <a th:href="@{/groups/new}" class="btn btn-primary">+ Nuevo grupo</a>
+        </div>
+    </div>
+
+    <!-- Sin grupos -->
+    <div class="empty-state-big" th:if="${#lists.isEmpty(grupos)}">
+        <div class="empty-icon">⬡</div>
+        <h3>Todavía no estás en ningún grupo</h3>
+        <p>Creá uno nuevo o unite con un código de invitación.</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+            <a th:href="@{/groups/join}" class="btn btn-ghost">Tengo un código</a>
+            <a th:href="@{/groups/new}" class="btn btn-primary">Crear grupo</a>
+        </div>
+    </div>
+
+    <!-- Lista de grupos -->
+    <div class="groups-grid" th:if="${!#lists.isEmpty(grupos)}">
+        <a th:each="grupo : ${grupos}"
+           th:href="@{/groups/{id}(id=${grupo.id})}"
+           class="group-card">
+            <div class="group-card-stripe"></div>
+            <div class="group-card-body">
+                <div class="group-card-name" th:text="${grupo.name}">Nombre del grupo</div>
+                <div class="group-card-meta">
+                    <span th:text="${#lists.size(grupo.members)} + ' miembros'">0 miembros</span>
+                    <span>·</span>
+                    <span th:text="${#lists.size(grupo.expenses)} + ' gastos'">0 gastos</span>
+                </div>
+                <div class="group-card-footer">
+                    <span class="badge badge-indigo">Ver grupo →</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</main>
+
+</body>
+</html>

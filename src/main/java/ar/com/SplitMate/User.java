@@ -1,9 +1,13 @@
 
 package ar.com.splitmate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import ar.com.splitmate.enums.Permisos;
+import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table( name = "user")
@@ -12,11 +16,19 @@ public class User extends Persistible{
     
     @Column( name = "username")
     private String username;
+
+    @Enumerated(EnumType.ORDINAL)
+    @ElementCollection(targetClass = Permisos.class)
+    @CollectionTable(name = "PERMISOS_USUARIOS", joinColumns = @JoinColumn(name = "USUARIO_ID"))
+    @Column( name = "PERMISO_ID")
+    private List<Permisos> permisos;
     private String password;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.permisos = new ArrayList<Permisos>();
+        this.permisos.add(Permisos.USUARIO);
     }
     
     public User() {};
@@ -34,6 +46,24 @@ public class User extends Persistible{
                     }
             
     }
+
+    public void turnToAdmin(){
+        this.permisos.add(Permisos.ADMINISTRADOR);
+    }
+
+    public List<GrantedAuthority> collectAuthorities(){
+        List<GrantedAuthority> credentials = new ArrayList<GrantedAuthority>();
+        System.out.println(this.permisos);
+
+        for (Permisos permiso : this.permisos){
+            System.out.println("Este permiso es :" + permiso);
+            credentials.add(new SimpleGrantedAuthority(permiso.securityName()));
+        }
+
+        System.out.println(credentials);
+        return credentials;
+    }
+
 
     public String getUsername() {
         return username;

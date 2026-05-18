@@ -1,27 +1,44 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Crear Grupo</title>
+    <title>SplitMate · Nuevo grupo</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-
 <body>
 
-<h1>Crear Grupo</h1>
+<header class="topbar">
+    <div class="logo-wrap">
+        <div class="logo-mark">
+            <div class="lb lb1"></div>
+            <div class="lb lb2"></div>
+            <div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+    </div>
+    <div class="topbar-right">
+        <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
+    </div>
+</header>
 
-<form th:action="@{/groups/save}" th:object="${groupForm}" method="post">
+<main class="main-content" style="max-width:480px">
 
-    <label>Nombre del grupo:</label>
-    <input type="text" th:field="*{name}" required />
+    <a th:href="@{/dashboard}" class="back-link">← Volver</a>
 
-    <br><br>
+    <div class="auth-card" style="margin-top:24px">
+        <h2 class="auth-title">Crear grupo</h2>
+        <p class="auth-sub">Se te agregará automáticamente como administrador</p>
 
-    <button type="submit">Crear</button>
+        <form th:action="@{/groups/save}" th:object="${groupForm}" method="post">
+            <div class="form-group">
+                <label>Nombre del grupo</label>
+                <input type="text" th:field="*{name}" placeholder="ej: Viaje a Mendoza" required autofocus/>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Crear grupo</button>
+        </form>
+    </div>
 
-</form>
-
-<br>
-<a th:href="@{/}">Volver</a>
+</main>
 
 </body>
 </html>

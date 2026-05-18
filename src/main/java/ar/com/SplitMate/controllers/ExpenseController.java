@@ -8,68 +8,68 @@ import ar.com.splitmate.forms.ExpenseForm;
 import ar.com.splitmate.servicios.ExpenseService;
 import ar.com.splitmate.servicios.GroupMemberService;
 import ar.com.splitmate.servicios.GroupService;
-import ar.com.splitmate.servicios.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/expenses")
 public class ExpenseController {
 
     private final ExpenseService expenseService;
-    private final UserService userService;
     private final GroupService groupService;
     private final GroupMemberService memberService;
 
-    public ExpenseController(
-            ExpenseService expenseService,
-            UserService userService,
-            GroupService groupService,
-            GroupMemberService memberService
-    ) {
+    public ExpenseController(ExpenseService expenseService,
+                             GroupService groupService,
+                             GroupMemberService memberService) {
         this.expenseService = expenseService;
-        this.userService = userService;
         this.groupService = groupService;
         this.memberService = memberService;
     }
 
+
     @GetMapping("/new")
-    public String form(Model model) {
+    public String form(@RequestParam Long groupId, HttpSession session, Model model) {
+        User user = (User) session.getAttribute("usuarioLogueado");
+        if (user == null) return "redirect:/login";
+
+
+        GroupMember miembro = memberService.obtenerMiembro(user.getId(), groupId);
+        if (miembro == null) return "redirect:/dashboard";
+
+        Group group = groupService.buscarPorId(groupId);
         model.addAttribute("expenseForm", new ExpenseForm());
+        model.addAttribute("grupo", group);
         return "expenses/create";
     }
 
     @PostMapping
-    public String create(@ModelAttribute ExpenseForm form, Model model) {
+    public String create(@ModelAttribute ExpenseForm form,
+                         @RequestParam Long groupId,
+                         HttpSession session,
+                         Model model) {
+        User user = (User) session.getAttribute("usuarioLogueado");
+        if (user == null) return "redirect:/login";
 
         try {
-            User user = userService.buscarPorId(form.getUserId());
-            Group group = groupService.buscarPorId(form.getGroupId());
-
-            GroupMember miembro =
-                    memberService.obtenerMiembro(user.getId(), group.getId());
+            Group group = groupService.buscarPorId(groupId);
+            GroupMember miembro = memberService.obtenerMiembro(user.getId(), groupId);
 
             if (miembro == null) {
-                throw new RuntimeException("El usuario no pertenece al grupo");
+                throw new RuntimeException("No sos miembro de este grupo");
             }
 
-            Expense expense = new Expense(
-                    form.getDescription(),
-                    form.getAmount(),
-                    miembro,
-                    group
-            );
-
+            Expense expense = new Expense(form.getDescription(), form.getAmount(), miembro, group);
             expenseService.guardarGasto(expense);
 
-            return "redirect:/";
+            return "redirect:/groups/" + groupId;
 
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("expenseForm", form);
+            model.addAttribute("grupo", groupService.buscarPorId(groupId));
             return "expenses/create";
         }
     }
