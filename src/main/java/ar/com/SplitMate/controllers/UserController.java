@@ -5,6 +5,11 @@ import ar.com.splitmate.forms.LoginForm;
 import ar.com.splitmate.forms.UserForm;
 import ar.com.splitmate.servicios.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,16 +77,30 @@ public class UserController {
             return "login";
         }
 
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        user.collectAuthorities()
+                );
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+        context.setAuthentication(authentication);
+
+        SecurityContextHolder.setContext(context);
+
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                context
+        );
 
         session.setAttribute("usuarioLogueado", user);
+        System.out.println(authentication.isAuthenticated());
+        System.out.println(authentication.getAuthorities());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/dashboard";
     }
 
-    // ── LOGOUT ──────────────────────────────────────────────────────────────
 
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
 }

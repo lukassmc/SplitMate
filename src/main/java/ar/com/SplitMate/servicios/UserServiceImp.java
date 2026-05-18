@@ -14,8 +14,9 @@ public class UserServiceImp implements UserService{
     private UserRepository repository;
     
     @Override
-    public void guardarUsuario(User user){
+    public User guardarUsuario(User user){
         this.repository.save(user);
+        return user;
     }
     
     @Override

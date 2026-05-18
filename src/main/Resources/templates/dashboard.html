@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>SplitMate · Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -16,6 +18,7 @@
         <span class="wordmark">Split<span>Mate</span></span>
     </div>
     <div class="topbar-right">
+        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/admin}" class="btn btn-ghost btn-sm"> Administracion</a>
         <span class="topbar-user" th:text="${usuario.username}"></span>
         <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
     </div>

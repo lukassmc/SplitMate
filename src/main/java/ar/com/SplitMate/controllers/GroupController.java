@@ -2,7 +2,7 @@ package ar.com.splitmate.controllers;
 
 import ar.com.splitmate.Group;
 import ar.com.splitmate.GroupMember;
-import ar.com.splitmate.Role;
+import ar.com.splitmate.enums.Role;
 import ar.com.splitmate.User;
 import ar.com.splitmate.forms.GroupForm;
 import ar.com.splitmate.servicios.GroupMemberService;

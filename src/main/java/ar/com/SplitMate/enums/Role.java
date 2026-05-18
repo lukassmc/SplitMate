@@ -1,5 +1,5 @@
 
-package ar.com.splitmate;
+package ar.com.splitmate.enums;
 
 public enum Role {
     ADMIN,
