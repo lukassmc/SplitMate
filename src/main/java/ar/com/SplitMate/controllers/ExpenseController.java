@@ -6,6 +6,7 @@ import ar.com.splitmate.GroupMember;
 import ar.com.splitmate.User;
 import ar.com.splitmate.forms.ExpenseForm;
 import ar.com.splitmate.servicios.ExpenseService;
+import ar.com.splitmate.servicios.ExpenseSplitService;
 import ar.com.splitmate.servicios.GroupMemberService;
 import ar.com.splitmate.servicios.GroupService;
 import jakarta.servlet.http.HttpSession;
@@ -20,13 +21,16 @@ public class ExpenseController {
     private final ExpenseService expenseService;
     private final GroupService groupService;
     private final GroupMemberService memberService;
+    private final ExpenseSplitService splitService;
 
     public ExpenseController(ExpenseService expenseService,
                              GroupService groupService,
-                             GroupMemberService memberService) {
+                             GroupMemberService memberService,
+                             ExpenseSplitService splitService) {
         this.expenseService = expenseService;
         this.groupService = groupService;
         this.memberService = memberService;
+        this.splitService = splitService;
     }
 
 
@@ -64,6 +68,7 @@ public class ExpenseController {
             Expense expense = new Expense(form.getDescription(), form.getAmount(), miembro, group);
             expenseService.guardarGasto(expense);
 
+            splitService.dividirGasto(expense, group.getMembers());
             return "redirect:/groups/" + groupId;
 
         } catch (Exception e) {

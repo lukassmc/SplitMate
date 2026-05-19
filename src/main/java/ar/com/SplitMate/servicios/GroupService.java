@@ -3,6 +3,9 @@ package ar.com.splitmate.servicios;
 
 import ar.com.splitmate.Group;
 import ar.com.splitmate.GroupMember;
+import ar.com.splitmate.User;
+
+import java.util.List;
 
 
 public interface GroupService {
@@ -15,4 +18,7 @@ public interface GroupService {
     Group buscarPorCodigo(String inviteCode);
 
     java.util.List<Group> buscarGruposDeUsuario(Long userId);
+
+    List<Group> listAll();
+
 }

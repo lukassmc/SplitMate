@@ -30,14 +30,21 @@ public class ExpenseSplit extends Persistible{
     
     @Column(name = "amount")
     private double amount;
+
+    private boolean is_paid;
+
+
     
     public ExpenseSplit(){};
 
-    public ExpenseSplit(Long id, GroupMember member, Expense expense, double amount) {
-        if (!(member == null) || !(expense == null) || amount < 1 ){ throw new RuntimeException("Ingrese los valores correctamente.");};
-
-        this.id = id;
+    public ExpenseSplit( GroupMember member, Expense expense, double amount) {
+        if (!(member == null) && !(expense == null) && amount < 1 )
+        { throw new RuntimeException("Ingrese los valores correctamente.");
+        };
+        this.member = member;
+        this.expense = expense;
         this.amount = amount;
+        this.is_paid = false;
     }
 
     public void setMember(GroupMember member) {
@@ -67,5 +74,13 @@ public class ExpenseSplit extends Persistible{
 
     public double getAmount() {
         return amount;
+    }
+
+    public boolean isPaid() {
+        return is_paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.is_paid = paid;
     }
 }

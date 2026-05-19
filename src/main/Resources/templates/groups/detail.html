@@ -5,42 +5,9 @@
     <title th:text="'SplitMate · ' + ${grupo.name}">SplitMate · Grupo</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-<script>
-    window.onload = function () {
 
-    var options = {
-        title: {
-            text: "Desktop OS Market Share"
-        },
-        subtitles: [{
-            text: "As of November, 2017"
-        }],
-          theme: "light2",
-        animationEnabled: true,
-        data: [{
-            type: "pie",
-            startAngle: 40,
-            toolTipContent: "<b>{label}</b>: {y}%",
-            showInLegend: "true",
-            legendText: "{label}",
-            indexLabelFontSize: 16,
-            indexLabel: "{label} - {y}%",
-            dataPoints: [
-                { y: 48.36, label: "Windows 7" },
-                { y: 26.85, label: "Windows 10" },
-                { y: 1.49, label: "Windows 8" },
-                { y: 6.98, label: "Windows XP" },
-                { y: 6.53, label: "Windows 8.1" },
-                { y: 2.45, label: "Linux" },
-                { y: 3.32, label: "Mac OS X 10.12" },
-                { y: 4.03, label: "Others" }
-            ]
-        }]
-    };
-    $("#chartContainer").CanvasJSChart(options);
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    }
-</script>
 <body>
 
 <header class="topbar">
@@ -83,43 +50,95 @@
         </div>
         <p class="invite-hint">Compartí este código para que otros usuarios puedan unirse al grupo.</p>
     </div>
-
     <div class="detail-grid">
 
-        <!-- Miembros -->
-        <div class="card">
-            <div class="card-title">Miembros</div>
-            <table class="data-table">
-                <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Rol</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="m : ${grupo.members}">
-                    <td>
-                        <div class="member-row">
-                            <div class="avatar" th:text="${#strings.substring(m.user.username, 0, 2).toUpperCase()}">US</div>
-                            <span th:text="${m.user.username}">username</span>
-                        </div>
-                    </td>
-                    <td>
-                            <span class="badge"
-                                  th:classappend="${m.role.name() == 'ADMIN'} ? 'badge-amber' : 'badge-navy'"
-                                  th:text="${m.role}">MEMBER</span>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(grupo.members)}">
-                    <td colspan="2" class="empty-state">Sin miembros aún</td>
-                </tr>
-                </tbody>
-            </table>
+        <!-- Columna izquierda -->
+        <div class="left-column">
+
+            <!-- Miembros -->
+            <div class="card">
+                <div class="card-title">Miembros</div>
+
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="m : ${grupo.members}">
+                        <td>
+                            <div class="member-row">
+                                <div class="avatar"
+                                     th:text="${#strings.substring(m.user.username, 0, 2).toUpperCase()}">
+                                    US
+                                </div>
+
+                                <span th:text="${m.user.username}">username</span>
+                            </div>
+                        </td>
+
+                        <td>
+                        <span class="badge"
+                              th:classappend="${m.role.name() == 'ADMIN'} ? 'badge-amber' : 'badge-navy'"
+                              th:text="${m.role}">
+                            MEMBER
+                        </span>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(grupo.members)}">
+                        <td colspan="2" class="empty-state">
+                            Sin miembros aún
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Balances -->
+            <div class="card balances-card">
+                <div class="card-title">Balances</div>
+
+                <div class="balances-list" th:if="${!#maps.isEmpty(balances)}">
+
+                    <div class="balance-item"
+                         th:each="entry : ${balances}">
+
+                        <p th:if="${entry.value > 0}">
+                            <strong th:text="${entry.key.username}"></strong>
+                            debe recibir
+                            <span class="balance-positive"
+                                  th:text="'$' + ${#numbers.formatDecimal(entry.value,0,'COMMA',0,'POINT')}">
+                        </span>
+                        </p>
+
+                        <p th:if="${entry.value < 0}">
+                            <strong th:text="${entry.key.username}"></strong>
+                            debe pagar
+                            <span class="balance-negative"
+                                  th:text="'$' + ${#numbers.formatDecimal(entry.value * -1,0,'COMMA',0,'POINT')}">
+                        </span>
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <p class="empty-state" th:if="${#maps.isEmpty(balances)}">
+                    No hay balances todavía
+                </p>
+            </div>
+
         </div>
 
-        <!-- Gastos -->
-        <div class="card">
+        <!-- Columna derecha -->
+        <div class="card expenses-card">
+
             <div class="card-title">Gastos</div>
+
             <table class="data-table">
                 <thead>
                 <tr>
@@ -128,29 +147,66 @@
                     <th>Pagó</th>
                 </tr>
                 </thead>
+
                 <tbody>
+
                 <tr th:each="e : ${grupo.expenses}">
                     <td th:text="${e.description}">desc</td>
-                    <td class="amount" th:text="'$' + ${#numbers.formatDecimal(e.amount, 0, 'COMMA', 0, 'POINT')}">$0</td>
-                    <td th:text="${e.paidBy.user.username}">usuario</td>
+
+                    <td class="amount"
+                        th:text="'$' + ${#numbers.formatDecimal(e.amount, 0, 'COMMA', 0, 'POINT')}">
+                        $0
+                    </td>
+
+                    <td th:text="${e.paidBy.user.username}">
+                        usuario
+                    </td>
                 </tr>
+
                 <tr th:if="${#lists.isEmpty(grupo.expenses)}">
                     <td colspan="3" class="empty-state">
                         Sin gastos aún.
-                        <a th:href="@{/expenses/new(groupId=${grupo.id})}">Agregar el primero</a>
+                        <a th:href="@{/expenses/new(groupId=${grupo.id})}">
+                            Agregar el primero
+                        </a>
                     </td>
                 </tr>
+
                 </tbody>
             </table>
 
-            <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-            <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-            <script src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
+            <!-- Chart -->
+            <div class="chart-wrapper">
+                <div id="chartContainer"></div>
+            </div>
+
         </div>
 
     </div>
 
 </main>
 
+<script th:inline="javascript">
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+</script>
 </body>
 </html>

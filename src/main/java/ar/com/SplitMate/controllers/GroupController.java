@@ -1,10 +1,12 @@
 package ar.com.splitmate.controllers;
 
+import ar.com.splitmate.Expense;
 import ar.com.splitmate.Group;
 import ar.com.splitmate.GroupMember;
 import ar.com.splitmate.enums.Role;
 import ar.com.splitmate.User;
 import ar.com.splitmate.forms.GroupForm;
+import ar.com.splitmate.servicios.ExpenseSplitService;
 import ar.com.splitmate.servicios.GroupMemberService;
 import ar.com.splitmate.servicios.GroupService;
 import jakarta.servlet.http.HttpSession;
@@ -12,16 +14,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/groups")
 public class GroupController {
 
     private final GroupService groupService;
     private final GroupMemberService memberService;
+    private ExpenseSplitService splitService;
 
-    public GroupController(GroupService groupService, GroupMemberService memberService) {
+    public GroupController(GroupService groupService, GroupMemberService memberService, ExpenseSplitService splitService) {
         this.groupService = groupService;
         this.memberService = memberService;
+        this.splitService = splitService;
     }
 
     // ── CREAR GRUPO ──────────────────────────────────────────────────────────
@@ -63,9 +70,23 @@ public class GroupController {
         GroupMember miembro = memberService.obtenerMiembro(user.getId(), id);
         if (miembro == null) return "redirect:/dashboard";
 
+        Map<User, Double> balances = new HashMap<>();
+
+        for (GroupMember member : group.getMembers()) {
+
+            double balance = splitService.calcularBalance(
+                    member,
+                    group.getExpenses()
+            );
+
+            balances.put(member.getUser(), balance);
+        }
+
+
         model.addAttribute("grupo", group);
         model.addAttribute("miembro", miembro);
         model.addAttribute("usuario", user);
+        model.addAttribute("balances", balances);
         return "groups/detail";
     }
 

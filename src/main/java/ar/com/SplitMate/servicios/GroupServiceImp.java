@@ -72,4 +72,9 @@ public class GroupServiceImp implements GroupService {
 
 
     }
+
+    @Override
+    public List<Group> listAll(){
+        return repository.findAll();
+    }
 }

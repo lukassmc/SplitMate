@@ -18,7 +18,7 @@
         <span class="wordmark">Split<span>Mate</span></span>
     </div>
     <div class="topbar-right">
-        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/admin}" class="btn btn-ghost btn-sm"> Administracion</a>
+        <a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" th:href="@{/sec/admin}" class="btn btn-ghost btn-sm"> Administracion</a>
         <span class="topbar-user" th:text="${usuario.username}"></span>
         <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
     </div>

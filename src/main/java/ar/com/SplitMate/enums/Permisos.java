@@ -1,5 +1,6 @@
 package ar.com.splitmate.enums;
 
+
 public enum Permisos {
     ADMINISTRADOR,
     USUARIO;

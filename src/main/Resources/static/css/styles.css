@@ -200,3 +200,33 @@ input::placeholder { color: var(--text-faint); }
   .page-header   { flex-direction: column; gap: 12px; }
   .header-actions{ width: 100%; }
 }
+
+.detail-grid{
+    display:grid;
+    grid-template-columns: 320px 1fr;
+    gap:24px;
+    align-items:start;
+}
+
+.balances-card{
+    margin-bottom:24px;
+}
+
+.chart-wrapper{
+    margin-top:24px;
+    width:100%;
+    max-width:420px;
+}
+
+.balance-item{
+    margin-bottom:10px;
+    font-size:15px;
+}
+
+.positive{
+    color:#1FA971;
+}
+
+.negative{
+    color:#E45858;
+}

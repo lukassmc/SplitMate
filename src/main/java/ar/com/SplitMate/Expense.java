@@ -1,12 +1,8 @@
 
 package ar.com.splitmate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +25,7 @@ public class Expense extends Persistible{
     private Group group;
     
     
-    @OneToMany(mappedBy= "expense")
+    @OneToMany(mappedBy= "expense" , cascade = CascadeType.ALL)
     private List<ExpenseSplit> splits;
 
     public Expense( String description, Double amount, GroupMember paidBy, Group group) {
@@ -61,5 +57,13 @@ public class Expense extends Persistible{
 
     public Group getGroup() {
         return group;
+    }
+
+    public List<ExpenseSplit> getSplits() {
+        return splits;
+    }
+
+    public void addSplit(ExpenseSplit split) {
+        this.splits.add(split);
     }
 }

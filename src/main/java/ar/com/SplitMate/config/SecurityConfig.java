@@ -43,7 +43,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth.requestMatchers("/sec/**").hasAnyRole(Permisos.ADMINISTRADOR.name(), Permisos.USUARIO.name())
                             .requestMatchers("/sec/admin/**").hasAnyRole(Permisos.ADMINISTRADOR.name())
                             .anyRequest().permitAll())
-                            .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class)
+
 
                             .formLogin(form -> form.disable()).build();
 
