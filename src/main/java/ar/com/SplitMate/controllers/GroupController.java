@@ -1,8 +1,8 @@
 package ar.com.splitmate.controllers;
 
-import ar.com.splitmate.Expense;
 import ar.com.splitmate.Group;
 import ar.com.splitmate.GroupMember;
+import ar.com.splitmate.dto.BalanceDTO;
 import ar.com.splitmate.enums.Role;
 import ar.com.splitmate.User;
 import ar.com.splitmate.forms.GroupForm;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -70,23 +69,16 @@ public class GroupController {
         GroupMember miembro = memberService.obtenerMiembro(user.getId(), id);
         if (miembro == null) return "redirect:/dashboard";
 
-        Map<User, Double> balances = new HashMap<>();
+        Map<String, BalanceDTO> balances = splitService.calcularBalances(id);
 
-        for (GroupMember member : group.getMembers()) {
-
-            double balance = splitService.calcularBalance(
-                    member,
-                    group.getExpenses()
-            );
-
-            balances.put(member.getUser(), balance);
-        }
-
+        // Splits pendientes del usuario logueado en este grupo
+        var pendientes = splitService.obtenerPendientes(id, miembro.getId());
 
         model.addAttribute("grupo", group);
         model.addAttribute("miembro", miembro);
         model.addAttribute("usuario", user);
-        model.addAttribute("balances", balances);
+        model.addAttribute("balances", balances.values());
+        model.addAttribute("pendientes", pendientes);
         return "groups/detail";
     }
 

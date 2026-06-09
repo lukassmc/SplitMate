@@ -41,7 +41,7 @@ public class SecurityConfig {
             return  http.securityMatcher("/**")
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                     .authorizeHttpRequests(auth -> auth.requestMatchers("/sec/**").hasAnyRole(Permisos.ADMINISTRADOR.name(), Permisos.USUARIO.name())
-                            .requestMatchers("/sec/admin/**").hasAnyRole(Permisos.ADMINISTRADOR.name())
+                            .requestMatchers("/admin/**").hasAnyRole(Permisos.ADMINISTRADOR.name())
                             .anyRequest().permitAll())
 
 

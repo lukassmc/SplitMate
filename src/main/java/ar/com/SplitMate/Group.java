@@ -1,5 +1,6 @@
 package ar.com.splitmate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Group extends Persistible {
     private List<GroupMember> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "group")
+    @JsonIgnore
     private List<Expense> expenses = new ArrayList<>();
 
     public Group(String name) {

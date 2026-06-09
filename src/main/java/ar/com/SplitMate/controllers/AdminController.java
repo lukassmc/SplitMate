@@ -31,12 +31,13 @@ public class AdminController {
     // Verifica que el usuario logueado sea ADMINISTRADOR
     private boolean esAdmin(HttpSession session) {
         User user = (User) session.getAttribute("usuarioLogueado");
+        System.out.println(user);
         if (user == null) return false;
         return user.getPermisos() != null &&
                 user.getPermisos().stream().anyMatch(p -> p.name().equals("ADMINISTRADOR"));
     }
 
-    @GetMapping("")
+    @GetMapping
     public String dashboard(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/dashboard";
 

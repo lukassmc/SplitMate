@@ -1,0 +1,90 @@
+Enum "group_member_role_enum" {
+  "ADMIN"
+  "MEMBER"
+}
+
+Table "expense" {
+  "id" bigint [pk, not null, increment]
+  "description" varchar(255)
+  "amount" double [not null]
+  "paid_by" bigint [not null]
+  "group_id" bigint [not null]
+
+  Indexes {
+    group_id [type: btree, name: "group_id"]
+  }
+}
+
+Table "expense_split" {
+  "id" bigint [pk, not null, increment]
+  "expense_id" bigint [not null]
+  "user_id" bigint [not null]
+  "amount" double [not null]
+  "is_paid" tinyint(1) [not null, default: 0]
+
+  Indexes {
+    expense_id [type: btree, name: "expense_id"]
+  }
+}
+
+Table "group_member" {
+  "id" bigint [pk, not null, increment]
+  "user_id" bigint [not null]
+  "group_id" bigint [not null]
+  "role" group_member_role_enum
+
+  Indexes {
+    group_id [type: btree, name: "group_id"]
+    role [type: btree, name: "role_id"]
+    (user_id, group_id) [unique, name: "user_id"]
+  }
+}
+
+Table "grupo" {
+  "id" bigint [pk, not null, increment]
+  "name" varchar(100) [not null]
+  "invite_code" varchar(255) [unique]
+}
+
+Table "permisos" {
+  "ID" int [pk, not null]
+  "nombre" varchar(25) [not null]
+}
+
+Table "permisos_usuarios" {
+  "PERMISO_ID" int [not null]
+  "USUARIO_ID" bigint [not null]
+
+  Indexes {
+    (PERMISO_ID, USUARIO_ID) [pk, name: "PRIMARY"]
+  }
+}
+
+Table "role" {
+  "id" int [pk, not null, increment]
+  "name" varchar(20) [not null]
+}
+
+Table "user" {
+  "id" bigint [pk, not null, increment]
+  "username" varchar(100) [unique, not null]
+  "password" varchar(255) [not null]
+}
+
+Ref "expense_ibfk_2":"grupo"."id" < "expense"."group_id"
+
+Ref "fk_expense_group_member":"group_member"."id" < "expense"."paid_by"
+
+Ref "expense_split_ibfk_1":"expense"."id" < "expense_split"."expense_id"
+
+Ref "expense_split_ibfk_2":"user"."id" < "expense_split"."user_id"
+
+Ref "FK3avcv6pk0uf0326ptfv1guf7c":"group_member"."id" < "expense_split"."user_id"
+
+Ref "group_member_ibfk_1":"user"."id" < "group_member"."user_id"
+
+Ref "group_member_ibfk_2":"grupo"."id" < "group_member"."group_id"
+
+Ref "PUSR$PER":"permisos"."ID" < "permisos_usuarios"."PERMISO_ID"
+
+Ref "PUSR$USR":"user"."id" < "permisos_usuarios"."USUARIO_ID"

@@ -2,6 +2,7 @@
 package ar.com.splitmate;
 
 import ar.com.splitmate.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,6 +22,7 @@ public class GroupMember extends Persistible{
     
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonIgnore
     private Group group;
     
     @Enumerated(EnumType.STRING)

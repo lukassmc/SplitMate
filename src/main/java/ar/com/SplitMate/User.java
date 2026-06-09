@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table( name = "user")
-public class User extends Persistible{
+public class User extends Persistible {
 
     
     @Column( name = "username")
@@ -64,6 +64,9 @@ public class User extends Persistible{
         return credentials;
     }
 
+    public List<Permisos> getPermisos() {
+        return permisos;
+    }
 
     public String getUsername() {
         return username;

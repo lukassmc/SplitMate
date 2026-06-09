@@ -1,26 +1,146 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin</title>
+    <title>SplitMate · Admin</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
-<h1>Dashboard Admin</h1>
+<header class="topbar">
+    <div class="logo-wrap">
+        <div class="logo-mark">
+            <div class="lb lb1"></div><div class="lb lb2"></div><div class="lb lb3"></div>
+        </div>
+        <span class="wordmark">Split<span>Mate</span></span>
+        <span class="badge badge-amber" style="margin-left:8px;font-size:10px">ADMIN</span>
+    </div>
+    <div class="topbar-right">
+        <a th:href="@{/dashboard}" class="btn btn-ghost btn-sm">← App</a>
+        <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Salir</a>
+    </div>
+</header>
 
-<div>
-    <h2>Total usuarios</h2>
-    <p th:text="${usuarios}"></p>
-</div>
+<main class="main-content">
 
-<div>
-    <h2>Total grupos</h2>
-    <p th:text="${grupos}"></p>
-</div>
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Panel de administración</h1>
+            <p class="page-sub">Visión global del sistema</p>
+        </div>
+    </div>
 
-<div>
-    <h2>Total gastos</h2>
-    <p th:text="${gastos}"></p>
-</div>
+    <!-- Stats -->
+    <div class="grid-3" style="margin-bottom:20px">
+        <div class="stat-card stat-accent-indigo">
+            <div class="stat-label">Usuarios registrados</div>
+            <div class="stat-value" th:text="${totalUsuarios}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Grupos activos</div>
+            <div class="stat-value" th:text="${totalGrupos}">0</div>
+        </div>
+        <div class="stat-card stat-accent-amber">
+            <div class="stat-label">Gastos registrados</div>
+            <div class="stat-value" th:text="${totalGastos}">0</div>
+        </div>
+    </div>
+
+    <div class="grid-2" style="gap:16px">
+
+        <!-- Usuarios -->
+        <div class="card">
+            <div class="card-title">Usuarios del sistema</div>
+            <table class="data-table">
+                <thead>
+                <tr><th>ID</th><th>Username</th><th>Permisos</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${usuarios}">
+                    <td style="color:var(--text-faint);font-size:12px" th:text="${u.id}">1</td>
+                    <td>
+                        <div class="member-row">
+                            <div class="avatar" th:text="${u.username != null && u.username.length() >= 2
+                            ? #strings.substring(u.username,0,2).toUpperCase() : '??'}">US</div>
+                            <span th:text="${u.username}">username</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span th:each="p : ${u.permisos}"
+                              class="badge"
+                              th:classappend="${p.name() == 'ADMINISTRADOR'} ? 'badge-amber' : 'badge-navy'"
+                              th:text="${p.name()}"
+                              style="margin-right:3px">USUARIO</span>
+                    </td>
+                    <td>
+                        <!-- Solo mostrar si no es ya admin -->
+                        <form th:if="${!u.permisos.contains(T(ar.com.splitmate.enums.Permisos).ADMINISTRADOR)}"
+                              th:action="@{/admin/usuarios/{id}/promote(id=${u.id})}"
+                              method="post" style="margin:0">
+                            <button type="submit" class="btn btn-ghost btn-sm"
+                                    style="font-size:11px;color:var(--amber-dark);border-color:var(--amber-mid)">
+                                → Hacer admin
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(usuarios)}">
+                    <td colspan="4" class="empty-state">Sin usuarios</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Grupos -->
+        <div class="card">
+            <div class="card-title">Grupos del sistema</div>
+            <table class="data-table">
+                <thead>
+                <tr><th>ID</th><th>Nombre</th><th>Miembros</th><th>Gastos</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="g : ${grupos}">
+                    <td style="color:var(--text-faint);font-size:12px" th:text="${g.id}">1</td>
+                    <td>
+                        <a th:href="@{/groups/{id}(id=${g.id})}"
+                           style="color:var(--indigo-mid);font-weight:500;text-decoration:none"
+                           th:text="${g.name}">Grupo</a>
+                    </td>
+                    <td th:text="${#lists.size(g.members)}">0</td>
+                    <td th:text="${#lists.size(g.expenses)}">0</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(grupos)}">
+                    <td colspan="4" class="empty-state">Sin grupos</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Últimos gastos -->
+    <div class="card" style="margin-top:16px">
+        <div class="card-title">Últimos gastos registrados</div>
+        <table class="data-table">
+            <thead>
+            <tr><th>ID</th><th>Descripción</th><th>Monto</th><th>Grupo</th><th>Pagó</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="e : ${gastos}">
+                <td style="color:var(--text-faint);font-size:12px" th:text="${e.id}">1</td>
+                <td th:text="${e.description}">desc</td>
+                <td class="amount" th:text="'$' + ${#numbers.formatDecimal(e.amount, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                <td th:text="${e.group.name}">grupo</td>
+                <td th:text="${e.paidBy.user.username}">usuario</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(gastos)}">
+                <td colspan="5" class="empty-state">Sin gastos</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
 
 </body>
 </html>

@@ -7,10 +7,10 @@ import ar.com.splitmate.dto.ExpenseRequest;
 import ar.com.splitmate.servicios.ExpenseService;
 import ar.com.splitmate.servicios.GroupMemberService;
 import ar.com.splitmate.servicios.GroupService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -28,8 +28,16 @@ public class ExpenseRestController {
         this.memberService = memberService;
     }
 
+    @GetMapping("list")
+    public ResponseEntity<List<Expense>> list(){
+        List<Expense> expenses = this.expenseService.listAll();
+
+        return ResponseEntity.ok(expenses);
+
+    }
+
     @PostMapping
-    public Expense create(@RequestBody ExpenseRequest req) {
+    public void create(@RequestBody ExpenseRequest req) {
 
         Group group = groupService.buscarPorId(req.groupId());
         GroupMember miembro = memberService.obtenerMiembro(req.userId(), req.groupId());
@@ -45,6 +53,7 @@ public class ExpenseRestController {
                 group
         );
 
-        return expenseService.guardarGasto(expense);
     }
+
+
 }

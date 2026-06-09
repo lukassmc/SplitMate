@@ -68,7 +68,7 @@ public class ExpenseController {
             Expense expense = new Expense(form.getDescription(), form.getAmount(), miembro, group);
             expenseService.guardarGasto(expense);
 
-            splitService.dividirGasto(expense, group.getMembers());
+            splitService.createSplit(expense, group.getMembers());
             return "redirect:/groups/" + groupId;
 
         } catch (Exception e) {

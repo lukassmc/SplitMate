@@ -9,10 +9,10 @@ import ar.com.splitmate.dto.JoinGroupRequest;
 import ar.com.splitmate.servicios.GroupMemberService;
 import ar.com.splitmate.servicios.GroupService;
 import ar.com.splitmate.servicios.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/groups")
@@ -30,7 +30,7 @@ public class GroupRestController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("create")
     public Group crearGrupo(@RequestBody GroupRequest req) {
 
         User user = userService.buscarPorId(req.userId());
@@ -63,5 +63,15 @@ public class GroupRestController {
         groupService.agregarMiembro(nuevo);
 
         return "OK";
+    }
+
+
+    @GetMapping("list")
+    public ResponseEntity<List<Group>> list(){
+        List<Group> groups = this.groupService.listAll();
+
+        return ResponseEntity.ok(groups);
+
+
     }
 }

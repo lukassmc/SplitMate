@@ -18,11 +18,17 @@ public class ExpenseServiceImp implements ExpenseService {
     private ExpenseRepository repository;
     @Autowired
     private ExpenseSplitRepository expSplitRepository;
-    
+
     @Override
-    public Expense guardarGasto(Expense expense){
-        this.repository.save(expense);
-        return expense;
+    public void guardarGasto(Expense expense) {
+        repository.save(expense);
+    }
+
+
+    @Override
+    public Expense buscarPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Gasto no encontrado: " + id));
     }
 
     public void dividirGasto(Expense expense) {

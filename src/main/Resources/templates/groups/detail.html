@@ -4,18 +4,14 @@
 <head>
     <title th:text="'SplitMate · ' + ${grupo.name}">SplitMate · Grupo</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <body>
 
 <header class="topbar">
     <div class="logo-wrap">
         <div class="logo-mark">
-            <div class="lb lb1"></div>
-            <div class="lb lb2"></div>
-            <div class="lb lb3"></div>
+            <div class="lb lb1"></div><div class="lb lb2"></div><div class="lb lb3"></div>
         </div>
         <span class="wordmark">Split<span>Mate</span></span>
     </div>
@@ -27,7 +23,6 @@
 
 <main class="main-content">
 
-    <!-- Encabezado del grupo -->
     <div class="group-hero">
         <div>
             <a th:href="@{/dashboard}" class="back-link">← Mis grupos</a>
@@ -37,9 +32,7 @@
                 <span th:text="${#lists.size(grupo.expenses)}">0</span> gastos
             </p>
         </div>
-        <a th:href="@{/expenses/new(groupId=${grupo.id})}" class="btn btn-primary">
-            + Agregar gasto
-        </a>
+        <a th:href="@{/expenses/new(groupId=${grupo.id})}" class="btn btn-primary">+ Agregar gasto</a>
     </div>
 
     <!-- Código de invitación -->
@@ -50,163 +43,211 @@
         </div>
         <p class="invite-hint">Compartí este código para que otros usuarios puedan unirse al grupo.</p>
     </div>
-    <div class="detail-grid">
 
-        <!-- Columna izquierda -->
-        <div class="left-column">
+    <!-- FILA SUPERIOR: Miembros + Gastos -->
+    <div class="detail-grid" style="margin-bottom:16px">
 
-            <!-- Miembros -->
-            <div class="card">
-                <div class="card-title">Miembros</div>
-
-                <table class="data-table">
-                    <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Rol</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <tr th:each="m : ${grupo.members}">
-                        <td>
-                            <div class="member-row">
-                                <div class="avatar"
-                                     th:text="${#strings.substring(m.user.username, 0, 2).toUpperCase()}">
-                                    US
-                                </div>
-
-                                <span th:text="${m.user.username}">username</span>
-                            </div>
-                        </td>
-
-                        <td>
+        <!-- Miembros -->
+        <div class="card">
+            <div class="card-title">Miembros</div>
+            <table class="data-table">
+                <thead><tr><th>Usuario</th><th>Rol</th></tr></thead>
+                <tbody>
+                <tr th:each="m : ${grupo.members}">
+                    <td>
+                        <div class="member-row">
+                            <div class="avatar" th:text="${#strings.substring(m.user.username,0,2).toUpperCase()}">US</div>
+                            <span th:text="${m.user.username}">username</span>
+                        </div>
+                    </td>
+                    <td>
                         <span class="badge"
                               th:classappend="${m.role.name() == 'ADMIN'} ? 'badge-amber' : 'badge-navy'"
-                              th:text="${m.role}">
-                            MEMBER
-                        </span>
-                        </td>
-                    </tr>
-
-                    <tr th:if="${#lists.isEmpty(grupo.members)}">
-                        <td colspan="2" class="empty-state">
-                            Sin miembros aún
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Balances -->
-            <div class="card balances-card">
-                <div class="card-title">Balances</div>
-
-                <div class="balances-list" th:if="${!#maps.isEmpty(balances)}">
-
-                    <div class="balance-item"
-                         th:each="entry : ${balances}">
-
-                        <p th:if="${entry.value > 0}">
-                            <strong th:text="${entry.key.username}"></strong>
-                            debe recibir
-                            <span class="balance-positive"
-                                  th:text="'$' + ${#numbers.formatDecimal(entry.value,0,'COMMA',0,'POINT')}">
-                        </span>
-                        </p>
-
-                        <p th:if="${entry.value < 0}">
-                            <strong th:text="${entry.key.username}"></strong>
-                            debe pagar
-                            <span class="balance-negative"
-                                  th:text="'$' + ${#numbers.formatDecimal(entry.value * -1,0,'COMMA',0,'POINT')}">
-                        </span>
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <p class="empty-state" th:if="${#maps.isEmpty(balances)}">
-                    No hay balances todavía
-                </p>
-            </div>
-
-        </div>
-
-        <!-- Columna derecha -->
-        <div class="card expenses-card">
-
-            <div class="card-title">Gastos</div>
-
-            <table class="data-table">
-                <thead>
-                <tr>
-                    <th>Descripción</th>
-                    <th>Monto</th>
-                    <th>Pagó</th>
-                </tr>
-                </thead>
-
-                <tbody>
-
-                <tr th:each="e : ${grupo.expenses}">
-                    <td th:text="${e.description}">desc</td>
-
-                    <td class="amount"
-                        th:text="'$' + ${#numbers.formatDecimal(e.amount, 0, 'COMMA', 0, 'POINT')}">
-                        $0
-                    </td>
-
-                    <td th:text="${e.paidBy.user.username}">
-                        usuario
+                              th:text="${m.role}">MEMBER</span>
                     </td>
                 </tr>
-
-                <tr th:if="${#lists.isEmpty(grupo.expenses)}">
-                    <td colspan="3" class="empty-state">
-                        Sin gastos aún.
-                        <a th:href="@{/expenses/new(groupId=${grupo.id})}">
-                            Agregar el primero
-                        </a>
-                    </td>
+                <tr th:if="${#lists.isEmpty(grupo.members)}">
+                    <td colspan="2" class="empty-state">Sin miembros aún</td>
                 </tr>
-
                 </tbody>
             </table>
-
-            <!-- Chart -->
-            <div class="chart-wrapper">
-                <div id="chartContainer"></div>
-            </div>
-
         </div>
 
+        <!-- Gastos -->
+        <div class="card">
+            <div class="card-title">Gastos</div>
+            <table class="data-table">
+                <thead><tr><th>Descripción</th><th>Monto</th><th>Pagó</th></tr></thead>
+                <tbody>
+                <tr th:each="e : ${grupo.expenses}">
+                    <td th:text="${e.description}">desc</td>
+                    <td class="amount" th:text="'$' + ${#numbers.formatDecimal(e.amount, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                    <td th:text="${e.paidBy.user.username}">usuario</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(grupo.expenses)}">
+                    <td colspan="3" class="empty-state">
+                        Sin gastos. <a th:href="@{/expenses/new(groupId=${grupo.id})}">Agregar el primero</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FILA INFERIOR: Balances + Gráfico -->
+    <div class="detail-grid">
+
+        <!-- Balances por miembro -->
+        <div class="card">
+            <div class="card-title">Balances del grupo</div>
+
+            <div th:if="${#lists.isEmpty(balances)}" class="empty-state" style="padding:20px">
+                Sin gastos registrados aún.
+            </div>
+
+            <div th:each="b : ${balances}" style="margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <div class="member-row">
+                        <div class="avatar" th:text="${#strings.substring(b.username,0,2).toUpperCase()}">US</div>
+                        <span style="font-weight:500" th:text="${b.username}">usuario</span>
+                    </div>
+                    <span class="badge"
+                          th:classappend="${b.balance > 0} ? 'badge-sage' : (${b.balance < 0} ? 'badge-indigo-deep' : 'badge-navy')"
+                          th:text="${b.balance != null ? #numbers.formatDecimal(T(java.lang.Math).abs(b.balance), 0, 'COMMA', 0, 'POINT') : '0'}">
+                        equilibrado
+                    </span>
+                </div>
+                <!-- Barra de progreso -->
+                <div style="height:4px;background:#E6EDF4;border-radius:2px;overflow:hidden">
+                    <div th:if="${b.totalPaid > 0}"
+                         style="height:100%;border-radius:2px;transition:width 0.4s"
+                         th:styleappend="'width:' + ${#numbers.formatDecimal(b.totalPaid / (b.totalPaid + b.totalOwed + 0.01) * 100, 0, 'COMMA', 0, 'POINT')} + '%;background:' + (${b.balance >= 0} ? '#5A8F6E' : '#3730A3')">
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:#9CA3AF;margin-top:2px">
+                    <span>Puso: $<span th:text="${#numbers.formatDecimal(b.totalPaid,0,'COMMA',0,'POINT')}">0</span></span>
+                    <span>Le corresponde: $<span th:text="${#numbers.formatDecimal(b.totalOwed,0,'COMMA',0,'POINT')}">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de gastos por miembro -->
+        <div class="card">
+            <div class="card-title">Distribución de gastos</div>
+            <div th:if="${#lists.isEmpty(grupo.expenses)}" class="empty-state" style="padding:40px">
+                Sin gastos para graficar.
+            </div>
+            <div th:if="${!#lists.isEmpty(grupo.expenses)}" style="position:relative;height:260px">
+                <canvas id="expenseChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis deudas pendientes -->
+    <div class="card" style="margin-top:16px" th:if="${!#lists.isEmpty(pendientes)}">
+        <div class="card-title" style="color:var(--indigo-mid)">
+            Mis deudas pendientes en este grupo
+        </div>
+        <table class="data-table">
+            <thead>
+            <tr><th>Gasto</th><th>Monto que debo</th><th>Pagado por</th><th>Estado</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${pendientes}">
+                <td th:text="${s.expense.description}">desc</td>
+                <td class="amount" th:text="'$' + ${#numbers.formatDecimal(s.amount, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                <td th:text="${s.expense.paidBy.user.username}">usuario</td>
+                <td><span class="badge badge-indigo">Pendiente</span></td>
+                <td>
+                    <!-- POST simple para marcar como pagado -->
+                    <form th:action="@{/splits/{id}/paid(id=${s.id})}" method="post" style="margin:0">
+                        <input type="hidden" name="groupId" th:value="${grupo.id}">
+                        <button type="submit" class="btn btn-ghost btn-sm"
+                                style="font-size:11px;color:var(--sage-dark);border-color:var(--sage-mid)">
+                            ✓ Marcar pagado
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Confirmación si no hay deudas -->
+    <div class="card" style="margin-top:16px;background:var(--sage-light);border-color:rgba(90,143,110,0.3)"
+         th:if="${#lists.isEmpty(pendientes) and !#lists.isEmpty(grupo.expenses)}">
+        <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:20px;height:20px;border-radius:50%;background:var(--sage-mid);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5l2.5 2.5 3.5-4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <p style="font-size:13px;color:var(--sage-dark);font-weight:500">
+                No tenés deudas pendientes en este grupo. ¡Todo equilibrado!
+            </p>
+        </div>
     </div>
 
 </main>
 
-<script th:inline="javascript">
+<!-- Chart.js: datos inyectados desde Thymeleaf -->
+<script th:if="${!#lists.isEmpty(grupo.expenses)}" th:inline="javascript">
+    (function() {
+        // Acumular total pagado por miembro
+        const gastos = /*[[${grupo.expenses}]]*/ [];
+        const totales = {};
 
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: values,
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
+        gastos.forEach(function(e) {
+            const quien = e.paidBy.user.username;
+            totales[quien] = (totales[quien] || 0) + e.amount;
+        });
+
+        const labels  = Object.keys(totales);
+        const valores = Object.values(totales);
+
+        // Paleta coherente con el design system
+        const colores = ['#3730A3','#6D66F5','#1B3A5C','#5A8F6E','#E88A00','#ECEAFD'];
+
+        const ctx = document.getElementById('expenseChart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: valores,
+                    backgroundColor: colores.slice(0, labels.length),
+                    borderWidth: 2,
+                    borderColor: '#F3F0E8'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                            color: '#0F2137',
+                            padding: 16
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                const pct   = ((ctx.parsed / total) * 100).toFixed(1);
+                                return ' $' + ctx.parsed.toLocaleString('es-AR') + ' (' + pct + '%)';
+                            }
+                        }
+                    }
                 }
             }
-        }
-    });
-
+        });
+    })();
 </script>
+
 </body>
 </html>

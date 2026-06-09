@@ -1,6 +1,7 @@
 
 package ar.com.splitmate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,16 +22,18 @@ public class ExpenseSplit extends Persistible{
     private Long id;
 
     @ManyToOne()
-    @JoinColumn(name= "user_id", nullable= false)
+    @JoinColumn(name= "group_member_id", nullable= false)
     private GroupMember member;
     
     @ManyToOne()
     @JoinColumn(name= "expense_id", nullable = false)
+    @JsonIgnore
     private Expense expense;
     
     @Column(name = "amount")
     private double amount;
 
+    @Column(name = "is_paid", nullable = false)
     private boolean is_paid;
 
 
@@ -54,7 +57,6 @@ public class ExpenseSplit extends Persistible{
     public void setExpense(Expense expense) {
         this.expense = expense;
     }
-
     public void setAmount(double amount) {
         this.amount = amount;
     }
@@ -63,15 +65,12 @@ public class ExpenseSplit extends Persistible{
     public Long getId() {
         return id;
     }
-
     public GroupMember getMember() {
         return member;
     }
-
     public Expense getExpense() {
         return expense;
     }
-
     public double getAmount() {
         return amount;
     }
@@ -80,7 +79,13 @@ public class ExpenseSplit extends Persistible{
         return is_paid;
     }
 
+    public void markAsPaid()    { this.is_paid = true; }
+
+
     public void setPaid(boolean paid) {
         this.is_paid = paid;
     }
 }
+
+
+// En caso de que, se registre un gasto de 100 total entre 5, pero uno puso 18, otro 22,y asi etc, como se contemp´laria//

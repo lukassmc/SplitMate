@@ -2,11 +2,12 @@
 package ar.com.splitmate.entity.test;
 
 import ar.com.splitmate.*;
+import ar.com.splitmate.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GroupMemberEntityTest {
+public class groupMemberEntityTest {
 
     @Test
     void deberiaCrearRelacionUsuarioGrupo() {
