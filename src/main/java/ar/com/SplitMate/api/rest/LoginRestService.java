@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginRestService {
 
     public static final String API_LOGIN_URL = "/api/login";
+    public static final String API_LOGOUT_URL = "/api/logout";
 
     @Autowired
     private UserService userService;
@@ -33,7 +34,7 @@ public class LoginRestService {
 
         User user = this.userService.buscarPorUsername(formulario.getUsername());
         if (user == null){
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            resultado = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } else {
             token = this.jwtService.buildToken(user);
             resultado = ResponseEntity.ok(token);
@@ -43,4 +44,10 @@ public class LoginRestService {
         return resultado;
 
     }
+
+    @PostMapping(API_LOGOUT_URL)
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.ok().build();
+    }
+}
 }
