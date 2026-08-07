@@ -15,4 +15,6 @@ public interface UserService {
     User buscarPorUsername(String username);
 
     List<User> listAll();
+
+    public User getUsuarioLogueado();
 }

@@ -50,4 +50,3 @@ public class LoginRestService {
         return ResponseEntity.ok().build();
     }
 }
-}

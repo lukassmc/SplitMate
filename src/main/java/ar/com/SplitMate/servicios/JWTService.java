@@ -1,6 +1,8 @@
 package ar.com.splitmate.servicios;
 
 import ar.com.splitmate.User;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.core.Authentication;
 
 public interface JWTService {
@@ -11,4 +13,8 @@ public interface JWTService {
     Authentication buildAuthentication(String token);
 
     public boolean isTokenValid(String token);
+
+    public JWTVerifier getVerifier();
+
+    public Algorithm buildAlgorithm(String secretPassword);
 }

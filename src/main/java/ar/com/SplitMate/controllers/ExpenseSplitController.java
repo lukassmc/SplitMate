@@ -24,6 +24,7 @@ public class ExpenseSplitController {
      * Marca un split como pagado y redirige de vuelta al detalle del grupo.
      * groupId viene como parámetro para saber a dónde volver.
      */
+    
     @PostMapping("/{splitId}/paid")
     public String markAsPaid(@PathVariable Long splitId,
                              @RequestParam Long groupId,
